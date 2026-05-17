@@ -9,110 +9,353 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <style>
         :root {
-            --primary: #1a365d;
-            --secondary: #2b6cb0;
-            --bg: #f7f9fb;
-            --card-bg: #ffffff;
-            --text: #2d3748;
-            --border: #e2e8f0;
-            --accent: #e53e3e;
+            --bg-main: #060913;
+            --bg-surface: #0f1626;
+            --bg-card: #17223b;
+            --border-color: #253556;
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --color-primary: #2563eb;
+            --color-accent: #ef4444;
+            --color-food: #10b981;
+            --color-fuel: #f97316;
+            --tea-green: #047857;
+            --insta-purple: #c13584;
         }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
+
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
-        .hidden { display: none !important; }
-        
-        /* Auth Screen Container */
-        #auth-container {
-            max-width: 400px;
-            margin: 100px auto;
-            padding: 30px;
-            background: var(--card-bg);
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            border: 1px solid var(--border);
-        }
-        .auth-box h2 { color: var(--primary); text-align: center; margin-bottom: 25px; }
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9em; }
-        .input-group input { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: var(--secondary); color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 1em; }
-        button:hover { background: var(--primary); }
-        .toggle-auth { text-align: center; margin-top: 15px; font-size: 0.9em; color: var(--secondary); cursor: pointer; }
 
-        /* Main Dashboard Layout */
-        header {
-            background: var(--primary);
-            color: white;
-            padding: 15px 20px;
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        .hidden { display: none !important; }
+
+        /* --- AUTO-ADJUSTING GHAT ROAD DRIVE BANNER --- */
+        .scenic-drive-container {
+            position: relative;
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(to bottom, #090d16, #111827);
+            border-bottom: 2px solid var(--border-color);
+            overflow: hidden;
+        }
+        @media (min-width: 768px) {
+            .scenic-drive-container { height: 180px; }
+        }
+        
+        /* Distant Mountains */
+        .ghat-mountains {
+            position: absolute;
+            bottom: 35px;
+            width: 200%;
+            height: 90px;
+            background-image: linear-gradient(135deg, #1b2330 25%, transparent 25%), linear-gradient(225deg, #1b2330 25%, transparent 25%);
+            background-size: 120px 120px;
+            animation: parallelScroll 60s linear infinite;
+            opacity: 0.35;
+        }
+
+        /* Tea Hills Layer */
+        .tea-plantations {
+            position: absolute;
+            bottom: 25px;
+            width: 200%;
+            height: 50px;
+            background: radial-gradient(circle at 50% 100%, var(--tea-green) 30%, transparent 50%);
+            background-size: 200px 100px;
+            animation: parallelScroll 30s linear infinite;
+            opacity: 0.55;
+        }
+
+        /* Multi-Lane Asphalt Road */
+        .road-strip {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 35px;
+            background: #1f2937;
+            border-top: 4px solid #374151;
+            box-shadow: inset 0 10px 20px rgba(0,0,0,0.5);
+        }
+        .road-line {
+            width: 100%;
+            height: 2px;
+            border-top: 3px dashed #fef08a;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.5;
+            animation: parallelScroll 8s linear infinite;
+        }
+
+        /* Vehicle Vectors */
+        .realistic-car {
+            position: absolute;
+            width: 65px;
+            height: 24px;
+            border-radius: 6px 12px 4px 4px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+        }
+
+        /* Metallic Silver SUV (XL6) */
+        .car-silver {
+            background: linear-gradient(to right, #94a3b8, #cbd5e1, #64748b);
+            bottom: 18px;
+            animation: cruiseSlow 45s linear infinite;
+        }
+        .car-silver::before {
+            content: '';
+            position: absolute;
+            top: 3px; left: 15px; width: 30px; height: 8px;
+            background: #0f172a;
+            border-radius: 2px 6px 0 0;
+        }
+        .car-silver::after {
+            content: '';
+            position: absolute;
+            right: 2px; top: 10px; width: 4px; height: 6px;
+            background: #fbbf24;
+            box-shadow: -60px -2px 0 #ef4444;
+        }
+
+        /* Crimson Red Compact SUV (Nexon) */
+        .car-red {
+            background: linear-gradient(to right, #b91c1c, #ef4444, #7f1d1d);
+            bottom: 5px;
+            animation: cruiseSlow 35s linear infinite;
+            animation-delay: -12s;
+        }
+        .car-red::before {
+            content: '';
+            position: absolute;
+            top: 2px; left: 18px; width: 25px; height: 9px;
+            background: #0f172a;
+            border-radius: 3px 5px 0 0;
+        }
+        .car-red::after {
+            content: '';
+            position: absolute;
+            right: 2px; top: 10px; width: 4px; height: 6px;
+            background: #fbbf24;
+            box-shadow: -56px -2px 0 #b91c1c;
+        }
+
+        @keyframes parallelScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        
+        @keyframes cruiseSlow {
+            0% { left: -100px; transform: scaleX(1); }
+            45% { left: 110%; transform: scaleX(1); }
+            50% { left: 110%; transform: scaleX(-1); }
+            95% { left: -100px; transform: scaleX(-1); }
+            100% { left: -100px; transform: scaleX(1); }
+        }
+
+        /* --- RESPONSIVE AUTH BOX --- */
+        #auth-container {
+            width: 90%;
+            max-width: 420px;
+            margin: 40px auto;
+            padding: 25px;
+            background: var(--bg-surface);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid var(--border-color);
+        }
+        @media (min-width: 768px) { #auth-container { padding: 35px; } }
+        .auth-box h2 { text-align: center; margin-bottom: 25px; font-weight: 800; font-size: 1.5rem; letter-spacing: -0.5px;}
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; margin-bottom: 8px; font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; }
+        .input-group input { width: 100%; padding: 12px; background: var(--bg-main); border: 1px solid var(--border-color); color: white; border-radius: 8px; font-size: 1rem;}
+        .input-group input:focus { border-color: var(--color-primary); outline: none; }
+        button { width: 100%; padding: 14px; background: var(--color-primary); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+        button:hover { background: #1e40af; }
+
+        /* --- RESPONSIVE INTERACTIVE BOYS HUB --- */
+        .crew-showcase-panel {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            width: 92%;
+            max-width: 1160px;
+            margin: 30px auto 0 auto;
+        }
+        .crew-showcase-panel h3 { margin-top: 0; font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        
+        .crew-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        @media (min-width: 480px) { .crew-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 768px) { .crew-grid { grid-template-columns: repeat(5, 1fr); gap: 15px; } }
+        @media (min-width: 1024px) { .crew-grid { grid-template-columns: repeat(10, 1fr); } }
+        
+        .crew-link { text-decoration: none; display: block; color: inherit; }
+        .crew-card {
+            background: linear-gradient(to bottom, var(--bg-card), #131b2e);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px 10px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .crew-card:hover { border-color: var(--insta-purple); transform: translateY(-3px); }
+        
+        .crew-avatar-wrapper {
+            width: 44px;
+            height: 44px;
+            background: rgba(37, 99, 235, 0.08);
+            border: 1px solid rgba(37, 99, 235, 0.25);
+            border-radius: 50%;
+            margin: 0 auto 10px auto;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        .crew-name { font-size: 0.8rem; font-weight: 700; color: var(--text-primary); text-transform: capitalize; }
+
+        /* --- DASHBOARD HEADER --- */
+        header {
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
             position: sticky;
             top: 0;
             z-index: 1000;
+            backdrop-filter: blur(8px);
         }
-        header h1 { margin: 0; font-size: 1.3rem; letter-spacing: 1px; }
-        .nav-actions { display: flex; align-items: center; gap: 15px; }
-        .user-tag { background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 15px; font-size: 0.85em; }
-        .btn-logout { background: var(--accent); padding: 6px 12px; font-size: 0.85em; width: auto; }
+        @media (min-width: 768px) {
+            header { flex-direction: row; justify-content: space-between; align-items: center; padding: 16px 24px; }
+        }
+        header h1 { margin: 0; font-size: 1.1rem; font-weight: 800; letter-spacing: 0.5px; text-align: center; }
+        @media (min-width: 768px) { header h1 { text-align: left; font-size: 1.25rem; } }
+        
+        .nav-actions { display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .user-tag { background: var(--bg-main); padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; border: 1px solid var(--border-color); color: var(--text-secondary); }
+        .btn-logout { background: transparent; border: 1px solid var(--color-accent); color: var(--color-accent); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; }
+        .btn-logout:hover { background: var(--color-accent); color: white; }
 
+        /* --- STABLE GRID SYSTEM --- */
         .dashboard-grid {
+            width: 92%;
             max-width: 1200px;
             margin: 30px auto;
-            padding: 0 15px;
             display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 25px;
+            grid-template-columns: 1fr;
+            gap: 20px;
         }
-        @media(max-width: 768px) { .dashboard-grid { grid-template-columns: 1fr; } }
+        @media (min-width: 960px) {
+            .dashboard-grid { grid-template-columns: 1.95fr 1.05fr; gap: 25px; }
+        }
 
-        /* Route Legs Column */
+        /* --- TACTICAL LOG LEGS --- */
         .leg-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 6px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
             padding: 20px;
             margin-bottom: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
         }
-        .leg-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--bg); padding-bottom: 10px; margin-bottom: 15px; }
-        .leg-title { font-size: 1.15rem; color: var(--primary); font-weight: bold; }
-        .distance-badge { background: #ebf8ff; color: var(--secondary); padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.9em; }
+        .leg-header { display: flex; flex-direction: column; gap: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 16px; }
+        @media (min-width: 480px) {
+            .leg-header { flex-direction: row; justify-content: space-between; align-items: center; }
+        }
+        .leg-title { font-size: 1.15rem; font-weight: 700; color: white; }
+        .distance-badge { background: rgba(37,99,235,0.1); color: #60a5fa; padding: 5px 10px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; border: 1px solid rgba(37,99,235,0.2); align-self: flex-start; }
         
-        .meta-row { display: flex; margin-bottom: 8px; font-size: 0.95em; line-height: 1.4; }
-        .meta-label { width: 120px; font-weight: bold; color: #4a5568; flex-shrink: 0; }
-        
-        .map-action-btn {
-            display: block;
-            background: var(--secondary);
-            color: white;
-            text-align: center;
-            padding: 10px;
-            border-radius: 5px;
+        .meta-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; font-size: 0.9rem; }
+        @media (min-width: 540px) {
+            .meta-row { flex-direction: row; align-items: flex-start; gap: 0; }
+        }
+        .meta-label { width: 130px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; font-size: 0.75rem; flex-shrink: 0; letter-spacing: 0.5px;}
+        .meta-value { color: var(--text-primary); line-height: 1.4; }
+
+        /* Responsive Action Items */
+        .poi-wrapper { display: flex; flex-wrap: wrap; gap: 8px; }
+        .poi-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 6px;
             text-decoration: none;
-            font-weight: bold;
-            margin-top: 15px;
-            text-transform: uppercase;
-            font-size: 0.85em;
-            letter-spacing: 0.5px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+        .poi-link.food { background: rgba(16,185,129,0.1); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
+        .poi-link.fuel { background: rgba(249,115,22,0.1); color: #fb923c; border: 1px solid rgba(249,115,22,0.2); }
+        .poi-link.scarce { border-color: rgba(239, 68, 68, 0.2); color: #f87171; background: rgba(239, 68, 68, 0.05);}
+        .poi-link.none { border-color: #4b5563; color: #9ca3af; background: rgba(75, 85, 99, 0.1); cursor: default; }
+
+        .feature-badge {
+            display: inline-block;
+            background: #1e1b4b;
+            color: #c084fc;
+            border: 1px solid #4338ca;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
         }
 
-        /* Right Panel: Budget & System Rules */
-        .panel-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 6px; padding: 20px; position: sticky; top: 85px; }
-        .panel-box h3 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--bg); padding-bottom: 10px; text-transform: uppercase; font-size: 1rem; }
-        
-        .budget-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--bg); font-size: 0.95em; }
-        .budget-row.total { font-weight: bold; color: var(--primary); font-size: 1.1em; border-top: 2px solid var(--border); margin-top: 10px; }
-        
-        .warning-box { background-color: #fff5f5; border-left: 4px solid var(--accent); color: #9b2c2c; padding: 12px; border-radius: 4px; font-size: 0.9em; margin-top: 15px; line-height: 1.4; }
+        .map-action-btn {
+            display: block;
+            background: var(--bg-card);
+            color: #93c5fd;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: 16px;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+        .map-action-btn:hover { background: var(--color-primary); color: white; border-color: var(--color-primary);}
+
+        /* Right Panel Blueprint */
+        .panel-box { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; }
+        @media (min-width: 960px) {
+            .panel-box { position: sticky; top: 160px; }
+        }
+        .panel-box h3 { margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; font-size: 0.85rem; text-transform: uppercase; color: var(--text-secondary); }
+        .budget-container { max-height: 280px; overflow-y: auto; }
+        .budget-row { display: flex; justify-content: space-between; padding: 10px 0; font-size: 0.85rem; color: var(--text-secondary); border-bottom: 1px solid rgba(255,255,255,0.03);}
+        .budget-row.total { font-weight: 700; color: #60a5fa; font-size: 1.05rem; border-top: 1px solid var(--border-color); margin-top: 15px; padding-top: 15px; border-bottom: none;}
+        .warning-box { background: rgba(239,68,68,0.05); border-left: 4px solid var(--color-accent); color: #fca5a5; padding: 14px; border-radius: 8px; font-size: 0.8rem; margin-top: 20px; line-height: 1.5;}
     </style>
 </head>
 <body>
+
+    <div class="scenic-drive-container">
+        <div class="ghat-mountains"></div>
+        <div class="tea-plantations"></div>
+        <div class="road-strip">
+            <div class="road-line"></div>
+            <div class="realistic-car car-silver"></div>
+            <div class="realistic-car car-red"></div>
+        </div>
+    </div>
 
     <div id="auth-container">
         <div id="login-box" class="auth-box">
@@ -126,7 +369,7 @@
                 <input type="password" id="login-password" placeholder="••••••••">
             </div>
             <button onclick="handleLogin()">Enter Dashboard</button>
-            <div class="toggle-auth" onclick="toggleAuthView(true)">New Crew Member? Register Account</div>
+            <div style="text-align: center; margin-top: 20px; color: var(--color-primary); cursor: pointer; font-size: 0.9rem;" onclick="toggleAuthView(true)">New Crew? Register</div>
         </div>
 
         <div id="register-box" class="auth-box hidden">
@@ -137,10 +380,10 @@
             </div>
             <div class="input-group">
                 <label>Password</label>
-                <input type="password" id="reg-password" placeholder="Minimum 6 characters">
+                <input type="password" id="reg-password" placeholder="Min 6 characters">
             </div>
             <button onclick="handleRegister()">Create Account</button>
-            <div class="toggle-auth" onclick="toggleAuthView(false)">Already registered? Log In</div>
+            <div style="text-align: center; margin-top: 20px; color: var(--color-primary); cursor: pointer; font-size: 0.9rem;" onclick="toggleAuthView(false)">Have account? Log In</div>
         </div>
     </div>
 
@@ -148,28 +391,50 @@
         <header>
             <h1>🌍 SOUTH INDIA LOOP EXPEDITION HUB</h1>
             <div class="nav-actions">
-                <div class="user-tag" id="user-display">User: Loading...</div>
+                <div class="user-tag" id="user-display">Loading...</div>
                 <button class="btn-logout" onclick="handleLogout()">Sign Out</button>
             </div>
         </header>
 
-        <div class="dashboard-grid">
-            <main id="route-legs-list">
-                </main>
+        <div class="crew-showcase-panel">
+            <h3>🏃‍♂️ Expedition Crew Roster (Tap/Click for Instagram)</h3>
+            <div class="crew-grid">
+                <a href="https://www.instagram.com/shrikrishnaa_patil/" target="_blank" class="crew-link">
+                    <div class="crew-card"><div class="crew-avatar-wrapper">👑</div><div class="crew-name">Shrikrishna</div></div>
+                </a>
+                <a href="https://www.instagram.com/atharva_kottawar_0016/" target="_blank" class="crew-link">
+                    <div class="crew-card"><div class="crew-avatar-wrapper">⚡</div><div class="crew-name">Atharwa</div></div>
+                </a>
+                <a href="https://www.instagram.com/shantanu_sanjay_deshmukh/" target="_blank" class="crew-link">
+                    <div class="crew-card"><div class="crew-avatar-wrapper">⛺</div><div class="crew-name">Shantanu</div></div>
+                </a>
+                <a href="https://www.instagram.com/mr_giriraj_muttepawar/" target="_blank" class="crew-link">
+                    <div class="crew-card"><div class="crew-avatar-wrapper">🏹</div><div class="crew-name">Giriraj</div></div>
+                </a>
+                <div class="crew-link">
+                    <div class="crew-card"><div class="crew-avatar-wrapper">🕶️</div><div class="crew-name">Namhit</div></div>
+                </div>
+                <div class="crew-link"><div class="crew-card"><div class="crew-avatar-wrapper">🔥</div><div class="crew-name">Crew Boy 6</div></div></div>
+                <div class="crew-link"><div class="crew-card"><div class="crew-avatar-wrapper">🏎️</div><div class="crew-name">Crew Boy 7</div></div></div>
+                <div class="crew-link"><div class="crew-card"><div class="crew-avatar-wrapper">🚀</div><div class="crew-name">Crew Boy 8</div></div></div>
+                <div class="crew-link"><div class="crew-card"><div class="crew-avatar-wrapper">⚓</div><div class="crew-name">Crew Boy 9</div></div></div>
+                <div class="crew-link"><div class="crew-card"><div class="crew-avatar-wrapper">🎯</div><div class="crew-name">Crew Boy 10</div></div></div>
+            </div>
+        </div>
 
+        <div class="dashboard-grid">
+            <main id="route-legs-list"></main>
             <aside>
                 <div class="panel-box">
                     <h3>📊 Activity Entry Ledger</h3>
-                    <div id="ledger-rows">
-                        </div>
+                    <div id="ledger-rows" class="budget-container"></div>
                     <div class="budget-row total">
                         <span>Total Entry Fees Pool</span>
                         <span>₹45,950</span>
                     </div>
-
                     <div class="warning-box">
-                        <strong>🐅 BANDIPUR/MUDUMALAI DIRECTIVE</strong><br>
-                        The forest gates close completely from 9:00 PM to 6:00 AM every night[cite: 30]. No civil vehicles allowed entry under any circumstances[cite: 31]. Stopping or ground camping is strictly illegal and dangerous due to heavy elephant/leopard activity[cite: 32]. Time Leg 14 to clear before dark[cite: 33]!
+                        <strong>🐅 BANDIPUR/MUDUMALAI FOREST CLOSED TIMINGS</strong><br><br>
+                        Forest gates shut down tightly between 9:00 PM and 6:00 AM every single night. Plan Leg 14 explicitly around these limitations.
                     </div>
                 </div>
             </aside>
@@ -177,7 +442,6 @@
     </div>
 
     <script>
-        // --- FIREBASE CONFIGURATION SETUP ---
         const firebaseConfig = {
           apiKey: "AIzaSyAnntQNMzO3VLRMGH360Wrbrv9tUxBaDmE",
           authDomain: "southtrip-6989c.firebaseapp.com",
@@ -187,38 +451,34 @@
           appId: "1:980658261332:web:5d5c1944697fc744c70cc1"
         };
 
-        // Initialize Firebase using compat syntax variables
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
-        const db = firebase.firestore();
 
-        // --- MASTER DATA SCHEMA (VERIFIED ROUTE TRANSLATIONS) ---
         const tripLegs = [
-            { id: 1, from: "Nanded", to: "Tirupati", km: "690 KM", time: "13h 00m", toll: "Piprwadh, Indalwai, Manoharabad, Raikal, Marur, Vegalam", cng: "EXCELLENT — Highly dense along Nanded-Hyderabad line and Hyderabad Outer Ring Road (ORR).", camp: "REGULATED — Strictly prohibited on Tirumala Hills. Permitted at Mamandur Forest base camps with state forest clearance.", cost: 3100, stays: "Taj Tirupati / Fortune Select Grand Ridge", vCamp: "Mamandur Eco-Tourism Forest Tents (Govt Approved)", link: "https://www.google.com/maps/dir/Nanded,+Maharashtra/Hyderabad,+Telangana/Tirupati,+Andhra+Pradesh" },
-            { id: 2, from: "Tirupati", to: "Yelagiri", km: "185 KM", time: "4h 15m", toll: "Kasipentia, Serilu, Pallikonda Toll Plazas", cng: "AVAILABLE — Available near Chittoor bypass and Vellore NH48 lines via AG&P Pratham.", camp: "ALLOWED — Highly allowed at Yelagiri Adventure Campgrounds (YACA) and localized private estates.", cost: 19000, stays: "Sterling Yelagiri / Marigold Ridge", vCamp: "Yelagiri Adventure Campgrounds (YACA Ground Pitches)", link: "https://www.google.com/maps/dir/Tirupati,+Andhra+Pradesh/Chittoor/Vellore/Yelagiri,+Tamil+Nadu" },
-            { id: 3, from: "Yelagiri", to: "Madurai", km: "340 KM", time: "6h 15m", toll: "Vaniyambadi, Omalur, Rasampalayam, Kodai Road", cng: "EXCELLENT — Plentiful options tracking down the NH44 highway grid (Salem, Karur, Dindigul).", camp: "PROHIBITED — Urban boundaries prohibit open setups. Permitted only at designated off-grid eco-plots near Samanar Hills.", cost: 100, stays: "Heritage Madurai / Courtyard by Marriott", vCamp: "Samanar Hills Off-Grid Eco-Camping Clearing", link: "https://www.google.com/maps/dir/Yelagiri,+Tamil+Nadu/Salem/Karur/Dindigul/Madurai,+Tamil+Nadu" },
-            { id: 4, from: "Madurai", to: "Rameswaram", km: "175 KM", time: "3h 30m", toll: "Eligudi Toll Plaza (NH87)", cng: "SCARCE — Last reliable stations are in outer Madurai. Highly sparse across the open coastal plain.", camp: "REGULATED — Allowed exclusively inside private coastal coconut groves near Olaikuda beach.", cost: 200, stays: "Hyatt Place Rameswaram / Daiwik Hotels", vCamp: "Olaikuda Beachfront Starlit Marine Tents", link: "https://www.google.com/maps/dir/Madurai,+Tamil+Nadu/Paramakudi/Ramanathapuram/Rameswaram,+Tamil+Nadu" },
-            { id: 5, from: "Rameswaram", to: "Dhanushkodi", km: "20 KM", time: "0h 40m", toll: "None (Free marine eco-corridor)", cng: "NONE — Zero CNG past Rameswaram island checkpoint. Run on secondary fuel.", camp: "STRICTLY BANNED — Night stays/camping completely banned by maritime police due to international border safety.", cost: 1500, stays: "Stay in Rameswaram Base Hotels", vCamp: "Banned (Return to Rameswaram for Overnight Stays)", link: "https://www.google.com/maps/dir/Rameswaram,+Tamil+Nadu/Dhanushkodi,+Tamil+Nadu" },
-            { id: 6, from: "Dhanushkodi", to: "Kanyakumari", km: "330 KM", time: "6h 45m", toll: "Etturavattayapuram, Salaipudur", cng: "AVAILABLE — Available at Tuticorin bypass and central Tirunelveli junctions.", camp: "REGULATED — Overnighters allowed strictly inside designated camper van beach parking lanes; no open ground pitching.", cost: 750, stays: "Sparsa Eco Resort / The Promenade Kanyakumari", vCamp: "Sunset Point Overlander Camper Van Parking Enclosure", link: "https://www.google.com/maps/dir/Rameswaram,+Tamil+Nadu/Tuticorin+Bypass/Tirunelveli/Kanyakumari,+Tamil+Nadu" },
-            { id: 7, from: "Kanyakumari", to: "Varkala", km: "115 KM", time: "3h 30m", toll: "Amaravila Toll Plaza (NH66)", cng: "EXCELLENT — Massive pipeline density along Trivandrum bypass networks via AG&P Pratham.", camp: "ALLOWED — Cliff-side private property camps highly active and welcoming to overnighters.", cost: 2500, stays: "Elixir Cliff Beach Resort / Gateway Varkala", vCamp: "Black Beach Cliffside Hammock & Pitch-Tent Clusters", link: "https://www.google.com/maps/dir/Kanyakumari,+Tamil+Nadu/Trivandrum+Bypass/Varkala,+Kerala" },
-            { id: 8, from: "Varkala", to: "Alleppey", km: "110 KM", time: "3h 15m", toll: "None (Interior coastal routes)", cng: "EXCELLENT — Readily available along the entries of Kollam and Alappuzha urban licensed gates.", camp: "REGULATED — Ground camping restricted near backwater canals; allowed at lakeside caravan bays.", cost: 4000, stays: "Vasundhara Sarovar Premiere / Ramada Alappuzha", vCamp: "Punnamada Lake Backwater Lakeside Caravan Bays", link: "https://www.google.com/maps/dir/Varkala,+Kerala/Kollam/Alappuzha,+Kerala" },
-            { id: 9, from: "Alleppey", to: "Kochi", km: "60 KM", time: "1h 30m", toll: "Kumbalam Toll Plaza", cng: "EXCELLENT — Complete saturation of IOCL and GAIL network pumps throughout Ernakulam district.", camp: "REGULATED — Urban zoning limits open sites; allowed inside beachfront surf camps at Cherai Beach.", cost: 200, stays: "Grand Hyatt Kochi Bolgatty / Brunton Boatyard", vCamp: "Cherai Beach Eco-tents & Active Surf Camp Zones", link: "https://www.google.com/maps/dir/Alappuzha,+Kerala/Ernakulam/Fort+Kochi,+Kochi,+Kerala" },
-            { id: 10, from: "Kochi", to: "Munnar", km: "130 KM", time: "4h 15m", toll: "None (State Highway Ghat tracks)", cng: "CRITICAL LACK — Zero pumps past Kothamangalam plains. Top off fully before climbing.", camp: "ALLOWED — Premium cloud-gazing campgrounds fully functional at Top Station ridge boundaries.", cost: 2000, stays: "Blanket Hotel & Spa / Windermere Estate", vCamp: "Top Station Cloud-Watching Ridge Campsites", link: "https://www.google.com/maps/dir/Fort+Kochi,+Kochi,+Kerala/Kothamangalam/Munnar,+Kerala" },
-            { id: 11, from: "Munnar", to: "Kodaikanal", km: "170 KM", time: "5h 30m", toll: "None (Inter-state mountain links)", cng: "CRITICAL LACK — No functional CNG channels inside these high-altitude ranges.", camp: "ALLOWED — Highly popular dome glamping and private valley ridge camps functional at Poombarai.", cost: 1500, stays: "The Tamara Kodai / The Carlton Kodaikanal", vCamp: "Poombarai Valley View Luxury Glamping Domes", link: "https://www.google.com/maps/dir/Munnar,+Kerala/Marayoor/Udumalaipettai/Kodaikanal,+Tamil+Nadu" },
-            { id: 12, from: "Kodaikanal", to: "Coimbatore", km: "175 KM", time: "4h 45m", toll: "Palani Road local checkpost points", cng: "AVAILABLE — Available upon hitting the structural urban fringe lines of Coimbatore city.", camp: "ALLOWED — Available at specialized private wilderness camps settled inside the Siruvani foothills.", cost: 0, stays: "Le Meridien / Radisson Blu Coimbatore", vCamp: "Siruvani Foothills Nature Reserve Camping Clearings", link: "https://www.google.com/maps/dir/Kodaikanal,+Tamil+Nadu/Palani/Coimbatore,+Tamil+Nadu" },
-            { id: 13, from: "Coimbatore", to: "Ooty", km: "90 KM", time: "3h 15m", toll: "Mettupalayam Forest Checkpost tax", cng: "LIMITED — Available at Mettupalayam base; strictly non-existent up inside Ooty town.", camp: "REGULATED — Forest department permission mandatory. Permitted on private tea estate boundaries out at Avalanche Lake.", cost: 600, stays: "Savoy IHCL SeleQtions / Welcomheritage Fernhills", vCamp: "Avalanche Lake Forestry Overlander Camping Plots", link: "https://www.google.com/maps/dir/Coimbatore,+Tamil+Nadu/Mettupalayam/Coonoor/Ooty,+Tamil+Nadu" },
-            { id: 14, from: "Ooty", to: "Wayanad", km: "110 KM", time: "3h 45m", toll: "Gudalur/Mudumalai Entry Checkposts", cng: "NONE — Highly sparse forest zone. Switch to main liquid tank assets.", camp: "EXCELLENT — Widely allowed at premium private lakeside campsites around the Banasura Sagar reservoir area.", cost: 500, stays: "Vythiri Resort / Evolve Back Kabini", vCamp: "Seagot Banasura Waterside Active Camping Grounds", link: "https://www.google.com/maps/dir/Ooty,+Tamil+Nadu/Gudalur/Wayanad,+Kerala" },
-            { id: 15, from: "Wayanad", to: "Coorg", km: "120 KM", time: "3h 30m", toll: "Bavali / Kutta Inter-State Gates", cng: "NONE — Strictly missing across interior reserve forest tracks.", camp: "ALLOWED — Fully operational inside private coffee plantation clearings and Mandalpatti offroad ridges.", cost: 4000, stays: "The Tamara Coorg / Taj Madikeri Resort & Spa", vCamp: "Mandalpatti Peak Wilderness Offroad Ridge Camps", link: "https://www.google.com/maps/dir/Wayanad,+Kerala/Kutta/Gonikoppal/Coorg,+Karnataka" },
-            { id: 16, from: "Coorg", to: "Mysuru", km: "120 KM", time: "2h 45m", toll: "Yelwala Toll Plaza (NH275)", cng: "EXCELLENT — Comprehensive pump networks available across the complete Mysuru Ring Road grid.", camp: "REGULATED — Pitching restricted near monument centers; allowed at dedicated adventure parks near Chamundi base lines.", cost: 1000, stays: "Grand Mercure Mysore / Radisson Blu Plaza", vCamp: "Chamundi Foothills Base Adventure Overnighter Ground", link: "https://www.google.com/maps/dir/Coorg,+Karnataka/Hunsur/Mysuru,+Karnataka" },
-            { id: 17, from: "Mysuru", to: "Nanded", km: "890 KM", time: "16h 30m", toll: "Nice Road, Karjeevanhalli, Chalageri, Gabbur, Humnabad", cng: "EXCELLENT — Highly saturated across major NH48 nodes (Tumakuru, Hubli) and into Latur / Maharashtra gates.", camp: "PROHIBITED — Commercial highway route; rest and use standard transit hotels along the national corridor.", cost: 0, stays: "Homeward Transit Accommodation Setup", vCamp: "Prohibited (Use Standard Transit Hotels Along Highway)", link: "https://www.google.com/maps/dir/Mysuru,+Karnataka/Tumakuru/Hubli/Solapur/Latur/Nanded,+Maharashtra" }
+            { id: 1, from: "Nanded", to: "Tirupati", km: "690 KM", time: "13h 00m", toll: "Piprwadh, Indalwai, Manoharabad", cng: "EXCELLENT — Dense down ORR channels.", cost: 3100, highlight: "🏁 Launch Pad — Initial Highway Push Across Boundaries", foodName: "🍳 Food Pyramid (NH44 Jadcherla)", foodLink: "https://maps.google.com", fuelName: "⛽ Jio-bp Pulse (Hyderabad ORR Hub)", fuelLink: "https://maps.google.com", link: "https://maps.google.com" },
+            { id: 2, from: "Tirupati", to: "Yelagiri", km: "185 KM", time: "4h 15m", toll: "Pallikonda Toll Plazas", cng: "AVAILABLE via AG&P networks.", cost: 19000, highlight: "⛰️ Hill Climb — First Hairpin Bend Challenge for the Fleet", foodName: "🥗 Sai Sangeet (NH48 Highway)", foodLink: "https://maps.google.com", fuelName: "⛽ AG&P Pratham CNG (Vellore Line)", fuelLink: "https://maps.google.com", link: "https://maps.google.com" },
+            { id: 3, from: "Yelagiri", to: "Madurai", km: "340 KM", time: "6h 15m", toll: "Vaniyambadi, Kodai Road", cng: "EXCELLENT across NH44 grid lines.", cost: 100, highlight: "🏛️ Temple Hub — Exploring Samanar Rock Outcrops", foodName: "🍲 Selvi Mess (Salem Bypass)", foodLink: "https://maps.google.com", fuelName: "⛽ HP Plaza (NH44 Karur Corridor)", fuelLink: "https://maps.google.com", link: "https://maps.google.com" },
+            { id: 4, from: "Madurai", to: "Rameswaram", km: "175 KM", time: "3h 30m", toll: "Eligudi Plaza (NH87)", cng: "SCARCE — Fill up completely at Madurai.", cost: 200, highlight: "🌉 Pamban Bridge Crossing — Pristine Marine Eco-Corridor Drive", foodName: "🍛 Hotel Aaryas (Ramanathapuram)", foodLink: "https://maps.google.com", fuelName: "⛽ IOCL Mega Station", fuelLink: "https://maps.google.com", link: "https://maps.google.com" },
+            { id: 5, from: "Rameswaram", to: "Dhanushkodi", km: "20 KM", time: "0h 40m", toll: "None", cng: "NONE — Island spit completely devoid of gas networks.", cost: 1500, highlight: "🌊 Ghost Town Land's End Edge — Merging of Two Oceans", foodName: "🐟 Local Beach Shacks", foodLink: "#", foodStatus: "none", fuelName: "⛽ BPCL Island Pump", fuelLink: "https://maps.google.com", fuelStatus: "none", link: "https://maps.google.com" },
+            { id: 6, from: "Dhanushkodi", to: "Kanyakumari", km: "330 KM", time: "6h 45m", toll: "Salaipudur Plazas", cng: "AVAILABLE at Tuticorin bypass loops.", cost: 750, highlight: "🌅 Southernmost Tip Vista — Sunset Overlander Junction Point", foodName: "🍤 Bell Hotel Plaza (Tuticorin)", foodLink: "https://maps.google.com", fuelName: "⛽ Shell Station (Tirunelveli Bypass)", fuelLink: "https://maps.google.com", link: "https://maps.google.com" },
+            { id: 7, from: "Kanyakumari", to: "Varkala", km: "115 KM", time: "3h 30m", toll: "Amaravila Plaza", cng: "EXCELLENT density across Trivandrum.", cost: 2500, highlight: "🌊 Varkala Cliff-Side Base — Hammock Camps & Arab Sea Overlooks", foodName: "🍌 Mothers Veg Plaza (Trivandrum)", foodLink: "https://maps.google.com", fuelName: "⛽ AG&P Eco Station", fuelLink: "https://maps.google.com", link: "https://maps.google.com" },
+            { id: 8, from: "Varkala", to: "Alleppey", km: "110 KM", time: "3h 15m", toll: "None", cng: "EXCELLENT across Alappuzha entrances.", cost: 4000, highlight: "🛶 Punnamada Lake Hotspots — Backwater Caravan Bays & Lakeside Stays", foodName: "🐠 Rafters Backwater Diner", foodLink: "https://maps.google.com", fuelName: "⛽ IOCL Highway Pump", fuelLink: "https://maps.google.com", link: "https://maps.google.com" },
+            { id: 9, from: "Alleppey", to: "Kochi", km: "60 KM", time: "1h 30m", toll: "Kumbalam Plaza", cng: "EXCELLENT saturation across district.", cost: 200, highlight: "🗽 Cherai Beach Surf Zone & Historical Fort Cochin Layouts", foodName: "🍗 Paragon Restaurant", foodLink: "https://maps.google.com", fuelName: "⛽ GAIL CNG Hub", fuelLink: "https://maps.google.com", link: "https://maps.google.com" },
+            { id: 10, from: "Kochi", to: "Munnar", km: "130 KM", time: "4h 15m", toll: "None", cng: "CRITICAL LACK — Top off before climb.", cost: 2000, highlight: "🌿 Munnar Tea Plantations, High Peaks & Top Station Cloud Camps", foodName: "🍃 Rapsy Restaurant", foodLink: "https://maps.google.com", fuelName: "⛽ IOCL Kothamangalam Base", fuelLink: "https://maps.google.com", fuelStatus: "scarce", link: "https://maps.google.com" },
+            { id: 11, from: "Munnar", to: "Kodaikanal", km: "170 KM", time: "5h 30m", toll: "None", cng: "CRITICAL LACK within mountain belts.", cost: 1500, highlight: "🦅 Deep Mountain Wilderness, Zipline Action Zones & Poombarai Domes", foodName: "🧆 Altaf's Cafe", foodLink: "https://maps.google.com", fuelName: "⛽ BPCL Mountain Base", fuelLink: "https://maps.google.com", fuelStatus: "none", link: "https://maps.google.com" },
+            { id: 12, from: "Kodaikanal", to: "Coimbatore", km: "175 KM", time: "4h 45m", toll: "Palani Road Local Checks", cng: "AVAILABLE along city fringe zones.", cost: 0, highlight: "🗿 Jatayu Statue Corridor Links & Siruvani Foothills Excursions", foodName: "☕ Sree Annapoorna", foodLink: "https://maps.google.com", fuelName: "⛽ Shell Integrated Plaza", fuelLink: "https://maps.google.com", link: "https://maps.google.com" },
+            { id: 13, from: "Coimbatore", to: "Ooty", km: "90 KM", time: "3h 15m", toll: "Mettupalayam Post tax", cng: "LIMITED — Absent inside Ooty proper.", cost: 600, highlight: "⛰️ Avalanche Lake Forest Reserves & High Altitude Track Layouts", foodName: "🍕 Nahar's Sidewalk Cafe", foodLink: "https://maps.google.com", fuelName: "⛽ HPCL Mettupalayam Base", fuelLink: "https://maps.google.com", fuelStatus: "none", link: "https://maps.google.com" },
+            { id: 14, from: "Ooty", to: "Wayanad", km: "110 KM", time: "3h 45m", toll: "Mudumalai Forest Gates", cng: "NONE — Dense national sanctuary limits.", cost: 500, highlight: "🐅 Bandipur Sanctuary Run — Heavy Wildlife Activity Zone (Strict Timings)", foodName: "🍛 1980's Nostalgic Restaurant", foodLink: "https://maps.google.com", fuelName: "⛽ HPCL Gudalur Forest Pump", fuelLink: "https://maps.google.com", fuelStatus: "none", link: "https://maps.google.com" },
+            { id: 15, from: "Wayanad", to: "Coorg", km: "120 KM", time: "3h 30m", toll: "Kutta Inter-State Checkposts", cng: "NONE — Dense plantation tracks.", cost: 4000, highlight: "🌲 Banasura Sagar Dam Reservoir Base & Mandalpatti Offroad Ridges", foodName: "🐷 Coorg Cuisine (Madikeri)", foodLink: "https://maps.google.com", fuelName: "⛽ IOCL Fuel Hub", fuelLink: "https://maps.google.com", fuelStatus: "none", link: "https://maps.google.com" },
+            { id: 16, from: "Coorg", to: "Mysuru", km: "120 KM", time: "2h 45m", toll: "Yelwala Plaza", cng: "EXCELLENT across Mysuru Ring Roads.", cost: 1000, highlight: "🏰 Historical Palace Grounds & Chamundi Base Camp Setups", foodName: "🥞 Mylari Hotel", foodLink: "https://maps.google.com", fuelName: "⛽ Jio-bp Truck Ring Road Hub", fuelLink: "https://maps.google.com", link: "https://maps.google.com" },
+            { id: 17, from: "Mysuru", to: "Nanded", km: "890 KM", time: "16h 30m", toll: "Nice Road, Karjeevanhalli", cng: "EXCELLENT along complete NH48 line.", cost: 0, highlight: "🏡 Final Transit Vector — Safe Inbound Flight Back Home to Nanded Base", foodName: "☕ Sree Rathnam Food Plaza", foodLink: "https://maps.google.com", fuelName: "⛽ IOCL Swagat Swadh Plaza", fuelLink: "https://maps.google.com", link: "https://maps.google.com" }
         ];
 
-        // --- INTERACTIVE UI FLOW STATE ---
         auth.onAuthStateChanged(user => {
             if (user) {
                 document.getElementById('auth-container').classList.add('hidden');
                 document.getElementById('dashboard-container').classList.remove('hidden');
-                document.getElementById('user-display').innerText = `Crew: ${user.email}`;
+                document.getElementById('user-display').innerText = `Crew Account: ${user.email}`;
                 renderDashboard();
             } else {
                 document.getElementById('auth-container').classList.remove('hidden');
@@ -231,57 +491,61 @@
             document.getElementById('register-box').classList.toggle('hidden', !showRegister);
         }
 
-        // --- AUTH ACTION HANDLERS ---
         function handleLogin() {
             const email = document.getElementById('login-email').value;
             const pass = document.getElementById('login-password').value;
-            if(!email || !pass) return alert("Please enter your crew login details.");
+            if(!email || !pass) return alert("Fill in credentials.");
             auth.signInWithEmailAndPassword(email, pass).catch(err => alert(err.message));
         }
 
         function handleRegister() {
             const email = document.getElementById('reg-email').value;
             const pass = document.getElementById('reg-password').value;
-            if(!email || !pass) return alert("Please fill in registration entries.");
+            if(!email || !pass) return alert("Fill in credentials.");
             auth.createUserWithEmailAndPassword(email, pass).catch(err => alert(err.message));
         }
 
-        function handleLogout() {
-            auth.signOut();
-        }
+        function handleLogout() { auth.signOut(); }
 
-        // --- DASHBOARD RENDER ENGINES ---
         function renderDashboard() {
             const listContainer = document.getElementById('route-legs-list');
             const ledgerContainer = document.getElementById('ledger-rows');
-            
-            listContainer.innerHTML = '';
-            ledgerContainer.innerHTML = '';
+            listContainer.innerHTML = ''; ledgerContainer.innerHTML = '';
 
             tripLegs.forEach(leg => {
-                // Parse Left Columns: Info Cards
+                let foodStatusClass = leg.foodStatus === "none" ? "none" : (leg.foodStatus === "scarce" ? "scarce" : "");
+                let fuelStatusClass = leg.fuelStatus === "none" ? "none" : (leg.fuelStatus === "scarce" ? "scarce" : "");
+
                 listContainer.innerHTML += `
                     <div class="leg-card">
                         <div class="leg-header">
                             <span class="leg-title">LEG ${leg.id}: ${leg.from} ➔ ${leg.to}</span>
-                            <span class="distance-badge">${leg.km} (~${leg.time})</span>
+                            <span class="distance-badge">${leg.km} • ${leg.time}</span>
                         </div>
-                        <div class="meta-row"><div class="meta-label">En-Route Tolls:</div><div>${leg.toll}</div></div>
-                        <div class="meta-row"><div class="meta-label">CNG Status:</div><div>${leg.cng}</div></div>
-                        <div class="meta-row"><div class="meta-label">Camping Rules:</div><div>${leg.camp}</div></div>
-                        <div class="meta-row"><div class="meta-label">Premium Hotel:</div><div>${leg.stays}</div></div>
-                        <div class="meta-row"><div class="meta-label">Campsite Hub:</div><div>${leg.vCamp}</div></div>
-                        <div class="meta-row"><div class="meta-label">Activity Spend:</div><div>₹${leg.cost.toLocaleString('en-IN')}</div></div>
-                        <a class="map-action-btn" href="${leg.link}" target="_blank">🗺️ Launch Live Navigation Map</a>
+                        <div class="meta-row">
+                            <div class="meta-label">Expedition</div>
+                            <div class="meta-value">
+                                <span class="feature-badge">${leg.highlight}</span>
+                            </div>
+                        </div>
+                        <div class="meta-row"><div class="meta-label">Tolls</div><div class="meta-value">${leg.toll}</div></div>
+                        <div class="meta-row"><div class="meta-label">CNG Index</div><div class="meta-value">${leg.cng}</div></div>
+                        <div class="meta-row" style="margin-top: 12px; margin-bottom: 6px;">
+                            <div class="meta-label">Pitstops</div>
+                            <div class="poi-wrapper">
+                                <a class="poi-link food ${foodStatusClass}" href="${leg.foodLink}" target="_blank">${leg.foodName}</a>
+                                <a class="poi-link fuel ${fuelStatusClass}" href="${leg.fuelLink}" target="_blank">${leg.fuelName}</a>
+                            </div>
+                        </div>
+                        <div class="meta-row" style="border-top: 1px dashed var(--border-color); padding-top: 14px; margin-top: 14px;">
+                            <div class="meta-label">Activity Cost</div>
+                            <div class="meta-value" style="font-weight: 700; color: #60a5fa;">₹${leg.cost.toLocaleString('en-IN')}</div>
+                        </div>
+                        <a class="map-action-btn" href="${leg.link}" target="_blank">🗺️ Deploy Live Navigation Vector</a>
                     </div>
                 `;
-
-                // Parse Right Side Panel Ledger Items
                 ledgerContainer.innerHTML += `
-                    <div class="budget-row">
-                        <span>Leg ${leg.id} Excursion (${leg.to})</span>
-                        <span>₹${leg.cost.toLocaleString('en-IN')}</span>
-                    </div>
+                    <div class="budget-row"><span>Leg ${leg.id} (${leg.to})</span><span style="color: #f3f4f6; font-weight: 500;">₹${leg.cost.toLocaleString('en-IN')}</span></div>
                 `;
             });
         }
